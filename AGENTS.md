@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-TypeScript sources live in `src`: shared game logic under `src/main/core`, client React views and workers in `src/main/client`, and Express/Mongo services in `src/main/server`. API response definitions stay in `src/main/dts`, UI styles in `src/css`, and static assets under `src/statics`. Tests are in `src/test`, emitting JavaScript into `out/` while bundled distributables land in `docs/`. Keep configuration files (`config/webpack.*.js`, `tsconfig.json`, env listings in `README.md`) untouched unless a change truly spans the whole stack.
+TypeScript sources live in `src`: shared game logic under `src/main/core`, client React views and workers in `src/main/client`, and Express/Mongo services in `src/main/server`. API response definitions stay in `src/main/dts`, UI styles in `src/css`, and static assets under `src/statics`. Tests are in `src/test`, emitting JavaScript into `out/` while bundled distributables land in `docs/`.
 
 ## Build, Test, and Development Commands
 `npm run build` compiles TypeScript, copies HTML, and produces production bundles in `docs/`. Use `npm run build:debug` or `npm run build:debug:client` for faster local bundles with source maps, and `npm run start:debug` to boot the Node server from `out/main/server/index.js`. `npm test` lint-builds common code then executes Mocha specs under `out/test`, while `npm run cover` wraps the same run with NYC for coverage. Run `npm run lint`, `npm run format`, and `npm run clean` before publishing to enforce style and clear stale artifacts.
