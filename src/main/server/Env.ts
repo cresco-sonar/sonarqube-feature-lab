@@ -1,4 +1,9 @@
+import dotenv from 'dotenv';
+import path from 'path';
 import { EnvMessage } from '../dts/StringResource';
+
+const envPath = path.resolve(__dirname, '../../../.env');
+dotenv.config({ path: envPath });
 export default class Env {
   public static appKey = process.env.APP_KEY as string;
   public static isTeamGame = (!!process.env.TEAM_GAME &&
