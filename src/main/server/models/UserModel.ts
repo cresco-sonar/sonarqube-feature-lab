@@ -49,11 +49,15 @@ export class UserService extends UserModel {
 
   public static async loadWithMatches(account: string, withSource: boolean) {
     const res = await UserService.findOne({ account }, withSource ? '' : '-source')
-      .populate([
-        { path: 'matches', select: '-dump', options: { sort: { created: -1 }, limit: 8 } },
-        { path: 'matches.winner', model: 'User', select: '-source' },
-        { path: 'matches.players', model: 'User', select: '-source' }
-      ])
+      .populate({
+        path: 'matches',
+        select: '-dump',
+        options: { sort: { created: -1 }, limit: 8 },
+        populate: [
+          { path: 'winner', model: 'User', select: '-source' },
+          { path: 'players', model: 'User', select: '-source' }
+        ]
+      })
       .exec();
     if (!res) {
       throw new Error('find user error');
@@ -92,11 +96,14 @@ export class UserService extends UserModel {
   public static async recent(excludeUser: string) {
     const query = { account: { $ne: excludeUser } };
     return UserService.find(query, '-source')
-      .populate([
-        { path: 'matches', select: '-dump' },
-        { path: 'matches.winner', model: 'User', select: '-source' },
-        { path: 'matches.players', model: 'User', select: '-source' }
-      ])
+      .populate({
+        path: 'matches',
+        select: '-dump',
+        populate: [
+          { path: 'winner', model: 'User', select: '-source' },
+          { path: 'players', model: 'User', select: '-source' }
+        ]
+      })
       .sort({ updated: -1 })
       .limit(10)
       .exec();

@@ -90,9 +90,16 @@ export function arena(players: SourcerSource[]): Promise<GameDump> {
     let thinkTimer: NodeJS.Timer | null = null;
 
     const kill = () => {
+      if (!child.process || child.isDead()) {
+        return;
+      }
       try {
         process.kill(child.process.pid);
       } catch (error) {
+        const err = error as NodeJS.ErrnoException;
+        if (err && (err.code === 'ESRCH' || err.code === 'EPERM')) {
+          return;
+        }
         console.log('process.kill', error);
       }
     };
