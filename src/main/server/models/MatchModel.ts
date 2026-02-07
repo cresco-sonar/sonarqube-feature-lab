@@ -1,4 +1,4 @@
-import { Types, Document, Schema, model, Model } from 'mongoose';
+import mongoose, { Types, Document, Model } from 'mongoose';
 import { UserDocument, UserService } from './UserModel';
 
 export type MatchDocument = Document & {
@@ -10,19 +10,18 @@ export type MatchDocument = Document & {
   updated: Date;
 };
 
-const schema = new Schema({
-  winner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  players: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
+const schema = new mongoose.Schema({
+  winner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
   dump: { type: String },
   created: { type: Date, default: Date.now },
   updated: { type: Date, default: Date.now }
-}).pre<MatchDocument>('save', function(next) {
+}).pre<MatchDocument>('save', function(this: MatchDocument) {
   this.updated = new Date();
-  next();
 });
 
 // tslint:disable-next-line:variable-name
-export const MatchModel = model<MatchDocument>('Match', schema);
+export const MatchModel = mongoose.model<MatchDocument>('Match', schema);
 export default MatchModel as Model<MatchDocument>;
 
 export class MatchService extends MatchModel {

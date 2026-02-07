@@ -51,7 +51,9 @@ export default class Field {
       try {
         sourcer.compile(new this.scriptLoaderConstructor());
       } catch (error) {
-        listener.onError(`There is an error in your code:　${error.message}`);
+        const message = error instanceof Error ? error.message : String(error);
+
+        listener.onError(`There is an error in your code: ${message}`);
       }
     });
   }

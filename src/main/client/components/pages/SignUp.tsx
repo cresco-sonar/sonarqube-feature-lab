@@ -54,7 +54,8 @@ export default class Login extends React.Component<RouteComponentProps<{}>, Logi
       await User.create({ parameter: { account, password, name, members, appKey } });
     } catch (error) {
       console.error(error);
-      this.setState({ errors: (error.response.body as ErrorResponse).errors });
+      const responseErrors = (error as { response?: { body?: ErrorResponse } }).response?.body?.errors ?? [];
+      this.setState({ errors: responseErrors });
       return;
     }
     await Auth.login();

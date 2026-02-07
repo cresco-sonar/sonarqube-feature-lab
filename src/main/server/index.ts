@@ -7,19 +7,23 @@ import * as bodyParser from 'body-parser';
 import expressSession from 'express-session';
 import cookieParser from 'cookie-parser';
 import connectMongo from 'connect-mongo';
+import { MongoClient } from 'mongodb';
 
 import db from './db';
 import Env from './Env';
 
 (async () => {
-  const MongoStore = connectMongo(expressSession);
-
   const mongoDbUri = Env.mongodbUri;
   if (!mongoDbUri) {
     throw new Error('env.MONGODB_URI is not defined.');
   }
 
   const mongooseConnection = await db(mongoDbUri);
+  const sessionClient = (mongooseConnection.getClient() as unknown) as MongoClient;
+  const sessionStore = connectMongo.create({
+    client: sessionClient,
+    collectionName: 'session'
+  });
   const app = express();
 
   app.use((req, _res, next) => {
@@ -39,7 +43,7 @@ import Env from './Env';
       secret: Env.sessionSecret || 'seecreeeeet',
       resave: false,
       saveUninitialized: true,
-      store: new MongoStore({ mongooseConnection, collection: 'session' })
+      store: sessionStore
     })
   );
 

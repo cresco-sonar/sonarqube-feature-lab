@@ -44,7 +44,8 @@ export default class Missile extends Shot {
       this.bot(this.controller);
     } catch (error) {
       this.command.reset();
-      this.debugDump.logs.push({ message: `Missile function error: ${error.message}`, color: 'red' });
+      const message = error instanceof Error ? error.message : String(error);
+      this.debugDump.logs.push({ message: `Missile function error: ${message}`, color: 'red' });
     } finally {
       this.command.unaccept();
     }

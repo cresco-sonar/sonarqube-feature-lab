@@ -3,24 +3,28 @@ import mongoose from 'mongoose';
 import './models/UserModel';
 import './models/MatchModel';
 
-(mongoose as any).Promise = Promise;
-
-export default function(uri: string): Promise<mongoose.Connection> {
+export default async function initDb(uri: string): Promise<mongoose.Connection> {
   if (!uri) {
-    throw new Error('MongoDB uri is undfined');
+    throw new Error('MongoDB uri is undefined');
   }
 
-  return new Promise<mongoose.Connection>((resolve, _reject) => {
-    mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
 
-    mongoose.connection.on('error', () => {
-      console.log('MongoDB connection error. Please make sure MongoDB is running.');
-      process.exit();
-    });
+  try {
+    await mongoose.connect(uri);
+  } catch (error) {
+    console.error('MongoDB connection error. Please make sure MongoDB is running.', error);
+    throw error;
+  }
 
-    mongoose.connection.on('connected', () => {
-      console.log('MongoDB connected', mongoose.connection.db.databaseName);
-      resolve(mongoose.connection);
+  if (mongoose.connection.listeners('error').length === 0) {
+    mongoose.connection.on('error', err => {
+      console.error('MongoDB connection error.', err);
     });
-  });
+  }
+
+  console.log('MongoDB connected', mongoose.connection.db?.databaseName ?? 'unknown');
+  return mongoose.connection;
 }

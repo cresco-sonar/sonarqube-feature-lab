@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { UserDocument } from '../models/UserModel';
 import { MatchDocument } from '../models/MatchModel';
 import Env from '../Env';
@@ -10,13 +9,21 @@ import { MatchResponse } from '../../dts/MatchResponse';
 import { UserResponse } from '../../dts/UserResponse';
 
 export default class ResponseCreator {
-  public static inflated(document: any): boolean {
-    return document && !(document instanceof Types.ObjectId);
+  private static isUserDocument(user: UserDocument | UserResponse): user is UserDocument {
+    return !!user && typeof (user as UserDocument).populate === 'function';
   }
 
-  public static user(user: UserDocument): UserResponse {
-    if (!this.inflated(user)) {
-      return user as UserResponse;
+  private static isMatchDocument(match: MatchDocument | MatchResponse): match is MatchDocument {
+    return !!match && typeof (match as MatchDocument).populate === 'function';
+  }
+
+  public static user(user: UserDocument | UserResponse): UserResponse {
+    if (!user) {
+      return {};
+    }
+
+    if (!this.isUserDocument(user)) {
+      return user;
     }
 
     return {
@@ -31,15 +38,21 @@ export default class ResponseCreator {
     };
   }
 
-  public static match(match: MatchDocument): MatchResponse {
-    return this.inflated(match)
-      ? {
-          _id: match._id.toHexString(),
-          winner: this.user(match.winner),
-          players: match.players ? match.players.map(v => this.user(v)) : [],
-          created: match.created
-        }
-      : (match as MatchResponse);
+  public static match(match: MatchDocument | MatchResponse): MatchResponse {
+    if (!match) {
+      return {} as MatchResponse;
+    }
+
+    if (!this.isMatchDocument(match)) {
+      return match;
+    }
+
+    return {
+      _id: match._id.toHexString(),
+      winner: this.user(match.winner),
+      players: match.players ? match.players.map(v => this.user(v)) : [],
+      created: match.created
+    };
   }
 
   public static auth(session: Express.Session): AuthResponse {

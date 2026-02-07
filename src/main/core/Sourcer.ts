@@ -68,7 +68,8 @@ export default class Sourcer extends Actor {
       }
       this.bot(this.controller);
     } catch (error) {
-      this.debugDump.logs.push({ message: `Sourcer function error: ${error.message}`, color: 'red' });
+      const message = error instanceof Error ? error.message : String(error);
+      this.debugDump.logs.push({ message: `Sourcer function error: ${message}`, color: 'red' });
       this.command.reset();
     } finally {
       this.command.unaccept();

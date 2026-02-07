@@ -1,4 +1,4 @@
-import { Schema, Document, model, Types, Model } from 'mongoose';
+import mongoose, { Document, Model, Types } from 'mongoose';
 
 import { createHash } from 'crypto';
 
@@ -20,7 +20,7 @@ export type UserDocument = Document & {
   updated: Date;
 };
 
-const schema = new Schema({
+const schema = new mongoose.Schema({
   account: { type: String, required: true },
   name: { type: String },
   provider: {
@@ -29,18 +29,17 @@ const schema = new Schema({
   },
   source: { type: String, default: defaultBot },
   members: [{ type: String }],
-  matches: [{ type: Schema.Types.ObjectId, ref: 'Match' }],
+  matches: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
   wins: { type: Number, default: 0 },
   losses: { type: Number, default: 0 },
   created: { type: Date, default: Date.now },
   updated: { type: Date, default: Date.now }
-}).pre<UserDocument>('save', function(next) {
+}).pre<UserDocument>('save', function(this: UserDocument) {
   this.updated = new Date();
-  next();
 });
 
 // tslint:disable-next-line:variable-name
-export const UserModel = model<UserDocument>('User', schema);
+export const UserModel = mongoose.model<UserDocument>('User', schema);
 export default UserModel as Model<UserDocument>;
 
 export class UserService extends UserModel {
@@ -49,14 +48,16 @@ export class UserService extends UserModel {
   }
 
   public static async loadWithMatches(account: string, withSource: boolean) {
-    let res = await UserService.findOne({ account }, withSource ? '' : '-source')
-      .populate({ path: 'matches', select: '-dump', options: { sort: { created: -1 }, limit: 8 } })
+    const res = await UserService.findOne({ account }, withSource ? '' : '-source')
+      .populate([
+        { path: 'matches', select: '-dump', options: { sort: { created: -1 }, limit: 8 } },
+        { path: 'matches.winner', model: 'User', select: '-source' },
+        { path: 'matches.players', model: 'User', select: '-source' }
+      ])
       .exec();
     if (!res) {
       throw new Error('find user error');
     }
-    res = await UserService.populate<UserDocument>(res, { path: 'matches.winner', model: 'User', select: '-source' });
-    res = await UserService.populate<UserDocument>(res, { path: 'matches.players', model: 'User', select: '-source' });
     return res;
   }
 
@@ -90,13 +91,15 @@ export class UserService extends UserModel {
 
   public static async recent(excludeUser: string) {
     const query = { account: { $ne: excludeUser } };
-    const res = await UserService.find(query, '-source')
-      .populate({ path: 'matches', select: '-dump' })
+    return UserService.find(query, '-source')
+      .populate([
+        { path: 'matches', select: '-dump' },
+        { path: 'matches.winner', model: 'User', select: '-source' },
+        { path: 'matches.players', model: 'User', select: '-source' }
+      ])
       .sort({ updated: -1 })
       .limit(10)
       .exec();
-
-    return UserService.populate(res, { path: 'matches.winner', model: 'User', select: '-source' });
   }
 
   public static hash(account: string, password: string) {

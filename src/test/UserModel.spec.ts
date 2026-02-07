@@ -69,8 +69,12 @@ describe('User', () => {
     console.log('createAndRegisterToUser successful');
     console.log('loadWithMatchees start');
     const loadedUser = await UserService.loadWithMatches('account', true);
+    if (!loadedUser) {
+      throw new Error('failed');
+    }
     console.log('loadWithMatchees successful');
     assert.ok(loadedUser.matches.length === 1, 'matches');
+    console.log('loadedUser.matches[0].winner.account', loadedUser.matches[0].winner.account);
     assert.ok(loadedUser.matches[0].winner.account === 'account', 'winner account');
     assert.ok(loadedUser.matches[0].players.length === 1, 'players');
     assert.ok(loadedUser.matches[0].players[0].account === 'account', 'players');

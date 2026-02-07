@@ -31,7 +31,7 @@ export default class TestUtils {
       connection.on('disconnected', () => console.log('Mongoose> disconnected'));
       console.log(`Mongoose> connect: ${dbUri}`);
       process.on('SIGINT', () => {
-        connection.close(() => {
+        connection.close(false).then(() => {
           console.log('Mongoose> SIGINT - terminating...');
           process.exit(0);
         });
