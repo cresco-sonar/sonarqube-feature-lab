@@ -27,7 +27,7 @@ export default class App extends React.Component<{}, AppState> {
     this.setState({ authResponse });
   };
 
-  public componentWillMount() {
+  public componentDidMount() {
     Auth.addOnChangeListener(this.updateAuth);
   }
 
@@ -76,7 +76,7 @@ export default class App extends React.Component<{}, AppState> {
                 <span className="optional-label"> {resource.apiDocument}</span>
               </a>
               <a target="_new" className="mdl-navigation__link" href="https://github.com/benishouga/sourcer">
-                <img src="/github.png" width="22" height="22" />
+                <img src="/github.png" width="22" height="22" alt="GitHub" />
                 <span className="optional-label"> Github</span>
               </a>
             </Navigation>

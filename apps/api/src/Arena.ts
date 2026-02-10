@@ -187,12 +187,13 @@ export function arena(players: SourcerSource[]): Promise<GameDump> {
             kill();
           }, DELAY_FOR_END_OF_GAME);
           break;
-        case Command.LOG:
+        case Command.LOG: {
           const player = players[message.data.id];
           const messages = message.data.messages;
           messages.unshift(player.account);
           console.log(...messages);
           break;
+        }
       }
     });
 

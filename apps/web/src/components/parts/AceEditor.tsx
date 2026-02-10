@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import * as Ace from 'brace';
 import 'brace/mode/javascript';
 import 'brace/theme/chrome';
@@ -16,6 +15,7 @@ export interface AceEditorProps {
 export default class AceEditor extends React.Component<AceEditorProps, {}> {
   private editor: Ace.Editor | null = null;
   private silent: boolean = false;
+  private rootRef = React.createRef<HTMLDivElement>();
 
   public static defaultProps = {
     code: '//write your code here',
@@ -23,8 +23,10 @@ export default class AceEditor extends React.Component<AceEditorProps, {}> {
   };
 
   public componentDidMount() {
-    const refs = this.refs as any;
-    const node = ReactDOM.findDOMNode(refs.root) as HTMLElement;
+    const node = this.rootRef.current;
+    if (!node) {
+      return;
+    }
     node.addEventListener('keydown', this.onKeyDown);
     this.editor = Ace.edit(node);
     this.editor.$blockScrolling = Infinity;
@@ -65,15 +67,16 @@ export default class AceEditor extends React.Component<AceEditorProps, {}> {
       this.editor.destroy();
       this.editor = null;
     }
-    const refs = this.refs as any;
-    const node = ReactDOM.findDOMNode(refs.root) as HTMLElement;
-    node.removeEventListener('keydown', this.onKeyDown);
+    const node = this.rootRef.current;
+    if (node) {
+      node.removeEventListener('keydown', this.onKeyDown);
+    }
   }
 
   public render() {
     const style = { fontSize: '14px !important', border: '1px solid lightgray' };
     return (
-      <div ref="root" style={style} className={this.props.className}>
+      <div ref={this.rootRef} style={style} className={this.props.className}>
         {this.props.code}
       </div>
     );

@@ -26,7 +26,7 @@ export default class Auth {
         !account && !password
           ? await get<AuthResponse>('/api/session', { signal })
           : await post<AuthResponse>('/api/session', { signal, body: { account, password } });
-    } catch (error) {
+    } catch {
       this.status = { admin: false, authenticated: false };
     }
     return this.status;

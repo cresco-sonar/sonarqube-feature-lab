@@ -15,7 +15,7 @@
     "build:debug:client": "pnpm --filter @sourcer/web run build:debug",
     "dev": "pnpm -r --parallel --filter @sourcer/api --filter @sourcer/web run dev",
     "dev:client": "pnpm --filter @sourcer/web run dev",
-    "lint": "tslint -c tslint.json \"apps/**/*.ts\" \"apps/**/*.tsx\" \"packages/**/*.ts\" \"packages/**/*.tsx\"",
+    "lint": "eslint --ext .ts,.tsx apps packages",
     "format": "prettier --parser typescript --write --single-quote \"apps/**/*.ts\" \"apps/**/*.tsx\" \"packages/**/*.ts\" \"packages/**/*.tsx\"",
     "test": "pnpm run test:core && pnpm run test:api && pnpm run test:web",
     "test:core": "pnpm --filter @sourcer/core run test",
@@ -31,31 +31,22 @@
     "precommit": "lint-staged",
     "heroku-postbuild": "pnpm run build"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.55.0",
+    "@typescript-eslint/parser": "^8.55.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.3",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
-    "tslint": "^5.20.1",
-    "tslint-config-airbnb": "^5.11.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1"
+    "rimraf": "^3.0.0"
   },
   "lint-staged": {
-    "apps/**/*.ts": [
-      "prettier --parser typescript --write",
-      "git add"
-    ],
-    "apps/**/*.tsx": [
-      "prettier --parser typescript --write",
-      "git add"
-    ],
-    "packages/**/*.ts": [
-      "prettier --parser typescript --write",
-      "git add"
-    ],
-    "packages/**/*.tsx": [
+    "{apps,packages}/**/*.{ts,tsx}": [
+      "eslint --fix",
       "prettier --parser typescript --write",
       "git add"
     ]

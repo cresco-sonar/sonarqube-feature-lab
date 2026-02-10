@@ -25,10 +25,6 @@ export default class Matches extends React.Component<MatchesProps, MatchesState>
 
   private abortController: AbortController = new AbortController();
 
-  public componentWillReceiveProps(nextProps: MatchesProps) {
-    this.setState({ matches: nextProps.matches });
-  }
-
   private async loadMatches(account?: string) {
     this.abortController = new AbortController();
     const signal = this.abortController.signal;
@@ -45,16 +41,23 @@ export default class Matches extends React.Component<MatchesProps, MatchesState>
     }
   }
 
-  public componentWillUnmount() {
-    if (this.abortController) {
-      this.abortController.abort();
+  public componentDidUpdate(prevProps: MatchesProps) {
+    if (this.props.matches !== prevProps.matches) {
+      this.setState({ matches: this.props.matches });
+      return;
+    }
+    const accountChanged = this.props.account !== prevProps.account;
+    if (!this.props.matches && (accountChanged || !!prevProps.matches)) {
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      this.loadMatches(this.props.account);
     }
   }
 
-  public async componentWillUpdate(nextProps: MatchesProps, _nextState: MatchesState) {
-    if (!nextProps.matches) {
+  public componentWillUnmount() {
+    if (this.abortController) {
       this.abortController.abort();
-      this.loadMatches(nextProps.account);
     }
   }
 

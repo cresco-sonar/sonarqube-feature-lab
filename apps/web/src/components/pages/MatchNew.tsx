@@ -45,6 +45,7 @@ export default class MatchNew extends React.Component<RouteComponentProps<RouteP
   private abortController: AbortController = new AbortController();
   public componentDidMount() {
     if (this.dialog) {
+      // eslint-disable-next-line react/no-find-dom-node
       const dialog = ReactDOM.findDOMNode(this.dialog) as any;
       if (!dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);

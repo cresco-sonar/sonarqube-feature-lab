@@ -19,11 +19,14 @@ export default class Login extends React.Component<RouteComponentProps<{}>, Logi
     this.state = { error: false, redirectToReferrer: false, admin: false };
   }
 
+  private accountRef = React.createRef<Textfield>();
+  private passwordRef = React.createRef<Textfield>();
+
   private async handleSubmit(event: React.FormEvent<{}>) {
     event.preventDefault();
 
-    const account = ComponentExplorer.extractInputValue(this.refs.account);
-    const password = ComponentExplorer.extractInputValue(this.refs.password);
+    const account = ComponentExplorer.extractInputValue(this.accountRef.current);
+    const password = ComponentExplorer.extractInputValue(this.passwordRef.current);
 
     const loggedIn = await Auth.login({ account, password });
 
@@ -48,8 +51,8 @@ export default class Login extends React.Component<RouteComponentProps<{}>, Logi
             {resource.loginTitle}
           </CardTitle>
           <CardText>
-            <Textfield label={resource.fieldLabelAccount} floatingLabel ref="account" />
-            <Textfield label={resource.fieldLabelPassword} floatingLabel ref="password" type="password" />
+            <Textfield label={resource.fieldLabelAccount} floatingLabel ref={this.accountRef} />
+            <Textfield label={resource.fieldLabelPassword} floatingLabel ref={this.passwordRef} type="password" />
             {this.state.error && <p>{resource.badRequest}</p>}
           </CardText>
           <CardActions

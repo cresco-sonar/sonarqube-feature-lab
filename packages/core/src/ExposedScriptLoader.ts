@@ -2,7 +2,7 @@ import ScriptLoader, { ConsoleLike } from './ScriptLoader';
 
 function construct(constructor: any, args: string[]) {
   function fun(this: any) {
-    return constructor.apply(this, args);
+    return constructor(...args);
   }
   fun.prototype = constructor.prototype;
   return new (fun as any)();
@@ -56,6 +56,6 @@ export default class ExposedScriptLoader implements ScriptLoader {
     argNames = argNames.concat(this.argNames);
     const strictText = '"use strict";\n';
     argNames.push(strictText + script);
-    return construct(Function, argNames).apply(undefined, this.argValues);
+    return construct(Function, argNames)(...this.argValues);
   }
 }

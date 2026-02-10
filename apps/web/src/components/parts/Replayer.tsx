@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { FABButton, Icon, Slider, Grid, Cell, Card, CardTitle, CardText, ProgressBar } from 'react-mdl';
 
 import Configs from '@sourcer/core/Configs';
@@ -27,6 +26,7 @@ export interface ReplayerState {
 
 export default class Replayer extends React.Component<ReplayerProps, ReplayerState> {
   private animationFrameHandler: number | null = null;
+  private rootRef = React.createRef<HTMLDivElement>();
 
   public static defaultProps = {
     gameDump: {},
@@ -153,10 +153,13 @@ export default class Replayer extends React.Component<ReplayerProps, ReplayerSta
     }
 
     return (
-      <div ref="root">
+      <div ref={this.rootRef}>
         <div
           className="mdl-card mdl-shadow--2dp"
           style={{ width: '100%', marginBottom: '8px' }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={this.handleCardKeyDown}
           onClick={() => this.onPlayPauseToggle()}
         >
           <div style={{ width, height, position: 'relative' }}>
@@ -204,13 +207,19 @@ export default class Replayer extends React.Component<ReplayerProps, ReplayerSta
     );
   }
 
-  private adjustWidth() {
-    const refs = this.refs as any;
-    const node = ReactDOM.findDOMNode(refs.root) as Element;
-
-    if (this.props.width === -1) {
-      this.setState({ dynamicWidth: node.clientWidth });
+  private handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onPlayPauseToggle();
     }
+  };
+
+  private adjustWidth() {
+    const node = this.rootRef.current;
+    if (!node || this.props.width !== -1) {
+      return;
+    }
+    this.setState({ dynamicWidth: node.clientWidth });
   }
 
   private FRAME_MILLS = 1000 / 60;

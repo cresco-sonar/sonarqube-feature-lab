@@ -24,6 +24,15 @@ import User from '../../service/User';
 import Match from '../../service/Match';
 import ProfileCard from '../parts/ProfileCard';
 
+const listButtonStyle: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  color: '#03a9f4',
+  cursor: 'pointer',
+  textAlign: 'left'
+};
+
 export interface OfficialState {
   users?: UserResponse[];
   player1?: UserResponse;
@@ -61,6 +70,7 @@ export default class Official extends React.Component<RouteComponentProps<{}>, O
   private abortController: AbortController = new AbortController();
   public async componentDidMount() {
     if (this.dialog) {
+      // eslint-disable-next-line react/no-find-dom-node
       const dialog = ReactDOM.findDOMNode(this.dialog) as any;
       if (!dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);
@@ -86,13 +96,15 @@ export default class Official extends React.Component<RouteComponentProps<{}>, O
       return (
         <ListItem key={user.account}>
           <ListItemContent icon="person">
-            <a
+            <button
+              type="button"
+              style={listButtonStyle}
               onClick={() => {
                 callback(user);
               }}
             >
               {user.name}
-            </a>
+            </button>
           </ListItemContent>
         </ListItem>
       );

@@ -32,19 +32,28 @@ export default class Edit extends React.Component<{}, EditState> {
   }
 
   private editingSource: string = '';
+  private arenaRef = React.createRef<ArenaTag>();
 
   private onTextChange = (value: string) => {
     this.editingSource = value;
-    if (this.state.playerInfo) {
-      this.state.playerInfo.source = value;
-    }
+    this.setState(prevState => {
+      if (!prevState.playerInfo) {
+        return null;
+      }
+      return { playerInfo: { ...prevState.playerInfo, source: value } };
+    });
   };
 
   private selectBot = (bot: string) => {
-    if (this.state.enemyInfo) {
-      this.state.enemyInfo.source = bot;
-    }
-    this.reload();
+    this.setState(
+      prevState => {
+        if (!prevState.enemyInfo) {
+          return null;
+        }
+        return { enemyInfo: { ...prevState.enemyInfo, source: bot } };
+      },
+      () => this.reload()
+    );
   };
 
   private abortController: AbortController = new AbortController();
@@ -80,7 +89,7 @@ export default class Edit extends React.Component<{}, EditState> {
   }
 
   public reload(_event?: React.FormEvent<{}>) {
-    (this.refs.arena as ArenaTag).onReload();
+    this.arenaRef.current?.onReload();
   }
 
   public showSavedSnackbar() {
@@ -143,7 +152,7 @@ export default class Edit extends React.Component<{}, EditState> {
           </Cell>
           <Cell col={6} tablet={12} phone={12}>
             <BotSelector selected={fiddle} onSelect={this.selectBot} />
-            <ArenaTag players={players} ref="arena" scale={1} isDemo={false} />
+            <ArenaTag players={players} ref={this.arenaRef} scale={1} isDemo={false} />
           </Cell>
         </Grid>
       );

@@ -45,10 +45,10 @@ export default class UserShow extends React.Component<UserShowProps, UserShowSta
     this.abortController.abort();
   }
 
-  public async componentWillUpdate(nextProps: UserShowProps) {
-    if (Auth.status.authenticated && nextProps.match.params.account !== this.props.match.params.account) {
+  public componentDidUpdate(prevProps: UserShowProps) {
+    if (Auth.status.authenticated && prevProps.match.params.account !== this.props.match.params.account) {
       this.abortController.abort();
-      this.loadUser(nextProps.match.params.account);
+      this.loadUser(this.props.match.params.account);
     }
   }
 
