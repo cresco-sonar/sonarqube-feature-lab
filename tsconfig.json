@@ -1,28 +1,7 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es2015",
-    "outDir": "out",
-    "lib": ["es2015","dom"],
-    "strict": true,
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "forceConsistentCasingInFileNames": true,
-    "listEmittedFiles": false,
-    "listFiles": false,
-    "stripInternal": true,
-    "traceResolution": false,
-    "newLine": "LF",
-    "jsx": "react",
-    "rootDir": "src",
-    "inlineSources": true,
-    "sourceMap": true,
-    "skipLibCheck": true
-  },
-  "include": ["src", "test", "types"],
-  "exclude": ["node_modules"]
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./apps/api" }
+  ]
 }

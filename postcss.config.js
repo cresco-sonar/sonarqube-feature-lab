@@ -1,4 +1,1 @@
-module.exports = ctx => ({
-  map: ctx && ctx.options ? ctx.options.map : false,
-  plugins: [require('autoprefixer')]
-});
+module.exports = require('./apps/web/postcss.config.cjs');
