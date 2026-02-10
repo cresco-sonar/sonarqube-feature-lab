@@ -1,8 +1,8 @@
 import { describe } from 'vitest';
 
 // import * as assert from 'assert';
-// import Utils from '@sourcer/core/Utils';
-// import V from '@sourcer/core/V';
+// import Utils from '../Utils';
+// import V from '../V';
 
 describe.skip('Utils', () => {
   // describe('Utils', () => {

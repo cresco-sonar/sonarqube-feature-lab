@@ -4,7 +4,9 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -17,9 +19,12 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "test": "echo \"(core has no tests yet)\""
+    "test": "vitest run",
+    "cover": "vitest run --coverage"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "@vitest/coverage-v8": "^1.5.2",
+    "typescript": "^5.9.3",
+    "vitest": "^1.5.2"
   }
 }

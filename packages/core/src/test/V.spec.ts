@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { describe, it } from 'vitest';
-import V from '@sourcer/core/V';
+import V from '../V';
 
 const EPSILON = 10e-12;
 

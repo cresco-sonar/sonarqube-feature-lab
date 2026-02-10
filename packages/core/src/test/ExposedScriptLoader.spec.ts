@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { describe, it } from 'vitest';
-import ExposedScriptLoader from '@sourcer/core/ExposedScriptLoader';
+import ExposedScriptLoader from '../ExposedScriptLoader';
 
 describe('ExposedScriptLoader', () => {
   it('load', () => {
