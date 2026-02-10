@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import { describe, it } from 'vitest';
 import SandboxedScriptLoader from '@sourcer/core/SandboxedScriptLoader';
 
 describe('SandboxedScriptLoader', () => {

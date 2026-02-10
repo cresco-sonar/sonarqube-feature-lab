@@ -7,17 +7,17 @@ import MatchModel, { MatchService } from '../models/MatchModel';
 
 import TestUtils from './TestUtils';
 import Env from '../Env';
+import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 
 describe('User', () => {
   let user: UserDocument | null = null;
-  before(async function() {
-    this.timeout(5000);
+  beforeAll(async () => {
     const mongoDbUri = Env.mongoTest;
     if (!mongoDbUri) {
       throw new Error('env.MONGO_TEST is not defined.');
     }
     await db(mongoDbUri);
-  });
+  }, 10000);
 
   beforeEach(async () => {
     await TestUtils.clearDb();
@@ -32,7 +32,7 @@ describe('User', () => {
     console.log('UserModel save successful');
   });
 
-  after(async () => {
+  afterAll(async () => {
     await mongoose.connection.close();
   });
 
@@ -56,8 +56,7 @@ describe('User', () => {
     assert.ok(loadedUser.provider.account === '1234', 'oauthAccount');
   });
 
-  it('loadWithMatchees', async function() {
-    this.timeout(10000);
+  it('loadWithMatchees', async () => {
     const match = new MatchModel();
     if (!user) {
       throw new Error();
@@ -78,5 +77,5 @@ describe('User', () => {
     assert.ok(loadedUser.matches[0].winner.account === 'account', 'winner account');
     assert.ok(loadedUser.matches[0].players.length === 1, 'players');
     assert.ok(loadedUser.matches[0].players[0].account === 'account', 'players');
-  });
+  }, 10000);
 });

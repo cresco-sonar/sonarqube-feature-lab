@@ -21,8 +21,9 @@ const schema = new mongoose.Schema({
 });
 
 // tslint:disable-next-line:variable-name
-export const MatchModel = mongoose.model<MatchDocument>('Match', schema);
-export default MatchModel as Model<MatchDocument>;
+export const MatchModel: Model<MatchDocument> =
+  (mongoose.models.Match as Model<MatchDocument>) || mongoose.model<MatchDocument>('Match', schema);
+export default MatchModel;
 
 export class MatchService extends MatchModel {
   public static load(argId: Types.ObjectId | string) {

@@ -1,4 +1,5 @@
-import cluster from 'cluster';
+import cluster, { ClusterSettings } from 'cluster';
+import path from 'path';
 import { FrameDump, GameDump, ResultDump, PlayersDump } from '@sourcer/core/Dump';
 
 import Field from '@sourcer/core/Field';
@@ -71,12 +72,20 @@ const GAME_TIMEOUT_MILLS = 15 * 1000; // 15 sec
 const THINK_TIMEOUT = 40; // 40 msec
 const DELAY_FOR_END_OF_GAME = 500; // 500 msec
 
+const isTsRuntime = path.extname(__filename) === '.ts';
+
 export function arena(players: SourcerSource[]): Promise<GameDump> {
   const id = players.map(p => p.account).join(',');
   const start = new Date().getTime();
   console.log('arena', id);
 
-  cluster.setupMaster({ exec: `${__dirname}/Arena` });
+  const clusterSettings: ClusterSettings = {
+    exec: __filename
+  };
+  if (isTsRuntime) {
+    clusterSettings.execArgv = [...process.execArgv, '-r', 'ts-node/register'];
+  }
+  cluster.setupMaster(clusterSettings);
   const child = cluster.fork();
 
   return new Promise<GameDump>((resolve, _reject) => {

@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+import { describe, it } from 'vitest';
 import { arena } from '../Arena';
 
 const botSource = `var missile = function(ctrl) {
@@ -43,70 +44,61 @@ return function(ctrl) {
 const fiddleSource = `return function(ctrl) { if(ctrl.altitude() < 100) { ctrl.ascent(); } }`;
 
 describe('NodeArena', () => {
-  it('arena', function() {
-    this.timeout(15000);
-
-    return arena([
+  it('arena', async () => {
+    const matchResult = await arena([
       { account: 'player1', name: 'player1', color: '#f00', source: botSource },
       { account: 'player2', name: 'player2', color: '#0f0', source: fiddleSource }
-    ]).then(matchResult => {
-      if (matchResult.result) {
-        assert.equal(matchResult.result.isDraw, false);
-        assert.equal(matchResult.result.timeout, null);
-        if (matchResult.result.winnerId !== null) {
-          assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player1');
-        } else {
-          assert.ok(false);
-        }
+    ]);
+    if (matchResult.result) {
+      assert.equal(matchResult.result.isDraw, false);
+      assert.equal(matchResult.result.timeout, null);
+      if (matchResult.result.winnerId !== null) {
+        assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player1');
+      } else {
+        assert.ok(false);
       }
-    });
-  });
+    }
+  }, 15000);
 
-  it('infinite loop1', function() {
-    this.timeout(15000);
-
+  it('infinite loop1', async () => {
     const code = `
       while(true);
     `;
 
-    return arena([
+    const matchResult = await arena([
       { account: 'player1', name: 'player1', color: '#f00', source: botSource },
       { account: 'player2', name: 'player2', color: '#0f0', source: code }
-    ]).then(matchResult => {
-      if (matchResult.result) {
-        assert.equal(matchResult.result.isDraw, false);
-        assert.equal(matchResult.result.timeout, 'player2');
-        if (matchResult.result.winnerId !== null) {
-          assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player1');
-        } else {
-          assert.ok(false);
-        }
+    ]);
+    if (matchResult.result) {
+      assert.equal(matchResult.result.isDraw, false);
+      assert.equal(matchResult.result.timeout, 'player2');
+      if (matchResult.result.winnerId !== null) {
+        assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player1');
+      } else {
+        assert.ok(false);
       }
-    });
-  });
+    }
+  }, 15000);
 
-  it('infinite loop2', function() {
-    this.timeout(15000);
-
+  it('infinite loop2', async () => {
     const code = `
       return function() {
         while(true);
       };
     `;
 
-    return arena([
+    const matchResult = await arena([
       { account: 'player1', name: 'player1', color: '#f00', source: code },
       { account: 'player2', name: 'player2', color: '#0f0', source: botSource }
-    ]).then(matchResult => {
-      if (matchResult.result) {
-        assert.equal(matchResult.result.isDraw, false);
-        assert.equal(matchResult.result.timeout, 'player1');
-        if (matchResult.result.winnerId !== null) {
-          assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player2');
-        } else {
-          assert.ok(false);
-        }
+    ]);
+    if (matchResult.result) {
+      assert.equal(matchResult.result.isDraw, false);
+      assert.equal(matchResult.result.timeout, 'player1');
+      if (matchResult.result.winnerId !== null) {
+        assert.equal(matchResult.players[matchResult.result.winnerId].account, 'player2');
+      } else {
+        assert.ok(false);
       }
-    });
-  });
+    }
+  }, 15000);
 });

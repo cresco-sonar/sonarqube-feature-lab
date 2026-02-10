@@ -39,8 +39,9 @@ const schema = new mongoose.Schema({
 });
 
 // tslint:disable-next-line:variable-name
-export const UserModel = mongoose.model<UserDocument>('User', schema);
-export default UserModel as Model<UserDocument>;
+export const UserModel: Model<UserDocument> =
+  (mongoose.models.User as Model<UserDocument>) || mongoose.model<UserDocument>('User', schema);
+export default UserModel;
 
 export class UserService extends UserModel {
   public static loadByAccount(account: string, withSource: boolean) {

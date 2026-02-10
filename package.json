@@ -59,10 +59,5 @@
       "prettier --parser typescript --write",
       "git add"
     ]
-  },
-  "overrides": {
-    "mocha": {
-      "diff": "8.0.3"
-    }
   }
 }

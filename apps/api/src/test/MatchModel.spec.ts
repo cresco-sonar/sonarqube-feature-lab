@@ -6,17 +6,17 @@ import MatchModel, { MatchService } from '../models/MatchModel';
 
 import TestUtils from './TestUtils';
 import Env from '../Env';
+import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 
 describe('Match', () => {
   let user: UserDocument | null = null;
-  before(async function() {
-    this.timeout(5000);
+  beforeAll(async () => {
     const mongoDbUri = Env.mongoTest;
     if (!mongoDbUri) {
       throw new Error('env.MONGO_TEST is not defined.');
     }
     await db(mongoDbUri);
-  });
+  }, 10000);
 
   beforeEach(async () => {
     await TestUtils.clearDb();
@@ -31,7 +31,7 @@ describe('Match', () => {
     console.log('UserModel save successful');
   });
 
-  after(async () => {
+  afterAll(async () => {
     await mongoose.connection.close();
   });
 
