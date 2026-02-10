@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Header, HeaderRow, Navigation, Content, Icon } from 'react-mdl';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { strings } from '../resources/Strings';
 

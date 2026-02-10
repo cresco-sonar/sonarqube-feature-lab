@@ -33,7 +33,7 @@ export class Arena {
     }
     this.cancel();
   };
-  private handler: NodeJS.Timer | null = null;
+  private handler: ReturnType<typeof setTimeout> | null = null;
 
   public cancel() {
     this.endOfGame = true;
@@ -50,7 +50,7 @@ export class Arena {
       frames: []
     };
 
-    this.worker = new Worker(path);
+    this.worker = new Worker(path, { type: 'module' });
     this.worker.addEventListener('message', (e: MessageEvent) => {
       const data: Data = e.data;
       switch (data.command) {

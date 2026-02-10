@@ -20,7 +20,7 @@ export async function list(req: Request, res: Response) {
   const matchesResponse = matches.map(v => {
     return ResponseCreator.match(v);
   });
-  res
+  return res
     .status(200)
     .type('json')
     .send(matchesResponse)
@@ -43,7 +43,7 @@ export async function show(req: Request, res: Response) {
       .send('Bad Request')
       .end();
   }
-  res
+  return res
     .status(200)
     .type('json')
     .send(ResponseCreator.match(match))
@@ -67,7 +67,7 @@ export async function replay(req: Request, res: Response) {
       .end();
   }
   const unziped = await Zip.unzip(match.dump);
-  res
+  return res
     .status(200)
     .type('json')
     .send(unziped)

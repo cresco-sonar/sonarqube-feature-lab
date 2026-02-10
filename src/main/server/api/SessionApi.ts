@@ -87,7 +87,7 @@ export function destroy(req: Request, res: Response) {
     return res.status(400).end('Bad Request');
   }
 
-  req.session.destroy(() => {
+  return req.session.destroy(() => {
     res
       .status(200)
       .type('json')

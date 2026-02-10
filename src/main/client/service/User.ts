@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import { get, post, put } from '../utils/fetch';
 import { ErrorResponse } from '../../dts/ErrorResponse';
 import { UserResponse } from '../../dts/UserResponse';
@@ -12,8 +11,6 @@ export interface SignUpParameter {
 }
 
 export default class User {
-  public static emitter = new EventEmitter();
-
   public static select({ signal, account }: { signal?: AbortSignal; account?: string } = {}) {
     return get<UserResponse>(account ? `/api/user/${account}` : '/api/user', { signal });
   }

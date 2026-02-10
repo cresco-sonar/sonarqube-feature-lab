@@ -1,4 +1,4 @@
-import * as cluster from 'cluster';
+import cluster from 'cluster';
 import { FrameDump, GameDump, ResultDump, PlayersDump } from '../core/Dump';
 
 import Field from '../core/Field';
@@ -87,14 +87,18 @@ export function arena(players: SourcerSource[]): Promise<GameDump> {
       frames: []
     };
     let currentThink: number | null = null;
-    let thinkTimer: NodeJS.Timer | null = null;
+    let thinkTimer: ReturnType<typeof setTimeout> | null = null;
 
     const kill = () => {
       if (!child.process || child.isDead()) {
         return;
       }
       try {
-        process.kill(child.process.pid);
+        const pid = child.process.pid;
+        if (pid === undefined) {
+          return;
+        }
+        process.kill(pid);
       } catch (error) {
         const err = error as NodeJS.ErrnoException;
         if (err && (err.code === 'ESRCH' || err.code === 'EPERM')) {

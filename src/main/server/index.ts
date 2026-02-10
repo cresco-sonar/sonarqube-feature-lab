@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import * as path from 'path';
 
 import apis from './api/apis';
 
-import * as bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 import expressSession from 'express-session';
 import cookieParser from 'cookie-parser';
 import connectMongo from 'connect-mongo';
@@ -35,8 +35,11 @@ import Env from './Env';
 
   app.use(express.static('docs'));
 
-  app.use(cookieParser());
-  app.use(bodyParser.json());
+  const cookieParserMiddleware = cookieParser() as RequestHandler;
+  const jsonParser = bodyParser.json() as RequestHandler;
+
+  app.use(cookieParserMiddleware);
+  app.use(jsonParser);
 
   app.use(
     expressSession({

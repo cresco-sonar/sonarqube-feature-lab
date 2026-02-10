@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import EventEmitter from '../utils/EventEmitter';
 import { get, post, del } from '../utils/fetch';
 import { AuthResponse } from '../../dts/AuthResponse';
 

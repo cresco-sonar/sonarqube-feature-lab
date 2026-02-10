@@ -1,11 +1,8 @@
-import { EventEmitter } from 'events';
 import { post, get } from '../utils/fetch';
 import { GameDump } from '../../core/Dump';
 import { MatchResponse } from '../../dts/MatchResponse';
 
 export default class Match {
-  public static emitter = new EventEmitter();
-
   public static matches(options?: { signal?: AbortSignal }) {
     let signal;
     if (options) {
